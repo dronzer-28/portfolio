@@ -4,21 +4,33 @@ import { useState, type FormEvent } from "react";
 import { FadeIn } from "./FadeIn";
 
 export function Contact() {
-  const [submitted, setSubmitted] = useState(false);
+  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
 
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    setStatus("sending");
+
     const form = e.currentTarget;
     const data = new FormData(form);
-    const name = data.get("name") as string;
-    const email = data.get("email") as string;
-    const message = data.get("message") as string;
 
-    const subject = encodeURIComponent(`Portfolio inquiry from ${name}`);
-    const body = encodeURIComponent(`From: ${name} (${email})\n\n${message}`);
-    window.open(`mailto:piyushmajee28@gmail.com?subject=${subject}&body=${body}`);
-    setSubmitted(true);
-    setTimeout(() => setSubmitted(false), 3000);
+    const res = await fetch("/api/contact", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: data.get("name"),
+        email: data.get("email"),
+        message: data.get("message"),
+      }),
+    });
+
+    if (res.ok) {
+      setStatus("sent");
+      form.reset();
+      setTimeout(() => setStatus("idle"), 3000);
+    } else {
+      setStatus("error");
+      setTimeout(() => setStatus("idle"), 3000);
+    }
   }
 
   return (
@@ -119,11 +131,15 @@ export function Contact() {
               <div className="pt-2">
                 <button
                   type="submit"
-                  disabled={submitted}
+                  disabled={status !== "idle"}
                   className="group inline-flex items-center gap-2 bg-fg px-6 py-3 font-mono text-xs tracking-widest uppercase text-bg transition-colors hover:bg-accent disabled:opacity-60"
                 >
-                  {submitted ? (
-                    "Opening mail client..."
+                  {status === "sending" ? (
+                    "Sending..."
+                  ) : status === "sent" ? (
+                    "Message sent!"
+                  ) : status === "error" ? (
+                    "Failed — try again"
                   ) : (
                     <>
                       Send Message
