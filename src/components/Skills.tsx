@@ -21,7 +21,7 @@ import {
   SiRedis,
   SiGit,
   SiJenkins,
-  SiTerraform,
+  SiCplusplus,
   SiGraphql,
   SiHtml5,
 } from "react-icons/si";
@@ -36,6 +36,7 @@ interface Skill {
 const SKILLS: Skill[] = [
   { name: "Java", icon: FaJava },
   { name: "Python", icon: SiPython },
+  { name: "C++", icon: SiCplusplus },
   { name: "TypeScript", icon: SiTypescript },
   { name: "JavaScript", icon: SiJavascript },
   { name: "SQL", icon: TbDatabase },
@@ -58,7 +59,6 @@ const SKILLS: Skill[] = [
   { name: "Redis", icon: SiRedis },
   { name: "Git", icon: SiGit },
   { name: "Jenkins", icon: SiJenkins },
-  { name: "Terraform", icon: SiTerraform },
   { name: "REST APIs", icon: TbApi },
   { name: "GraphQL", icon: SiGraphql },
   { name: "System Design", icon: TbSettings },
